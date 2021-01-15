@@ -65,14 +65,13 @@ private:
 
 	Music battleMusic;
 
-
-	Time m_GameTimeTotal;
 	int frameCounter;
 	int numEnemiesAlive;
 	bool showIntro = true;
 	bool showWin = false;
 	bool showLoss = false;
 	bool endGame = false;
+	bool increasedFrame = false;
 
 	void input(int frame);
 	void update(float dtAsSeconds);
@@ -82,6 +81,7 @@ private:
 	void StartBattle();
 	bool CheckGameWon();
 	bool CheckGameLost();
+	void SetAssets();
 public:
 	Engine();
 

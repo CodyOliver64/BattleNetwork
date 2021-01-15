@@ -11,40 +11,12 @@ Engine::Engine()
 
 	m_Window.create(VideoMode(resolution.x, resolution.y), "Battle Network", Style::Resize);
 
+	m_Window.setFramerateLimit(350);
+
 	m_MainView.setSize(resolution);
 	m_HudView.reset(FloatRect(0, 0, resolution.x, resolution.y));
 
-	m_BackgroundTexture = TextureHolder::GetTexture("graphics/Space-Background-Tiled.png");
-	m_BackgroundSprite.setTexture(m_BackgroundTexture);
-
-	m_BattleStartTex = TextureHolder::GetTexture("graphics/battle_start.png");
-	m_BattleStartSprite.setTexture(m_BattleStartTex);
-	m_BattleStartSprite.setScale(sf::Vector2f(5.f, 5.f));
-	m_BattleStartSprite.setPosition(sf::Vector2f(600, 400));
-
-	m_WinTex = TextureHolder::GetTexture("graphics/enemy_deleted.png");
-	m_WinSprite.setTexture(m_WinTex);
-	m_WinSprite.setScale(sf::Vector2f(5.f, 5.f));
-	m_WinSprite.setPosition(sf::Vector2f(600, 400));
-
-	m_LossTex = TextureHolder::GetTexture("graphics/game_over.png");
-	m_LossSprite.setTexture(m_LossTex);
-	m_LossSprite.setScale(sf::Vector2f(5.f, 5.f));
-	m_LossSprite.setPosition(sf::Vector2f(530, 400));
-
-	thanksFont.loadFromFile("fonts/FunkyJunk.ttf");
-
-	thanksText.setFont(thanksFont);
-	thanksText.setCharacterSize(90);
-	thanksText.setFillColor(Color::White);
-	thanksText.setPosition(0, 400);
-	std::stringstream s;
-	s << "    Thanks for Playing! \n Stay Tuned For Updates \n \n   Press Escape To Exit...";
-	thanksText.setString(s.str());
-
-	battleMusic.openFromFile("sounds/loop_theme.ogg");
-	battleMusic.setLoop(true);
-	battleMusic.setVolume(1.5f);
+	SetAssets();
 
 	SetGrid();
 
@@ -66,7 +38,7 @@ Engine::Engine()
 }
 
 void Engine::run()
-{
+{	
 	StartBattle();
 	
 	while (m_Window.isOpen())
@@ -85,9 +57,11 @@ void Engine::run()
 			frameCounter++;
 			if (frameCounter == 10000)
 				frameCounter = 0;
-
+			
+			// Handle player input
 			input(frameCounter);
 
+			// Check for enemy/player death
 			if (enemy1.CheckForDeath(frameCounter))
 				numEnemiesAlive--;
 			if (enemy2.CheckForDeath(frameCounter))
@@ -95,7 +69,9 @@ void Engine::run()
 			if (enemy3.CheckForDeath(frameCounter))
 				numEnemiesAlive--;
 
+			player.checkPlayerHit(frameCounter);
 
+			//Update enemies
 			if (frameCounter > 0 && frameCounter < 1000 || frameCounter > 2000 && frameCounter < 3000 || frameCounter > 4000 && frameCounter < 5000 || frameCounter > 6000 && frameCounter < 7000 || frameCounter > 8000 && frameCounter < 9000)
 				enemy1.Attack(frameCounter);
 			else
@@ -106,15 +82,11 @@ void Engine::run()
 			bool lastSquare2 = enemy2.shockwave.Update(frameCounter);
 			enemy3.shockwave.UpdateCannonFire(frameCounter, enemy3.currentCounter);
 
-			player.checkPlayerHit(frameCounter);
-
-
 			enemy1.MoveEnemy(frameCounter);
 			enemy2.MoveEnemy(frameCounter);
 
 			UpdateGrid(lastSquare1, lastSquare2);
 
-			//update(dtAsSeconds);
 			draw();
 		}
 	}
@@ -132,7 +104,6 @@ void Engine::StartBattle()
 		input(frameCounter);
 		frame--;
 	}
-
 	showIntro = false;
 	player.canMove = true;
 	player.canShoot = true;
@@ -154,7 +125,6 @@ bool Engine::CheckGameWon()
 			input(frameCounter);
 			frame--;
 		}
-
 		endGame = true;
 		battleMusic.openFromFile("sounds/loop_overworld.ogg");
 		battleMusic.play();
@@ -377,4 +347,39 @@ void Engine::SetGrid()
 	m_EnemyGrid9.setTextureRect(IntRect(0, 0, 40, 30));
 	m_EnemyGrid9.setScale(sf::Vector2f(5.f, 5.f));
 	m_EnemyGrid9.setPosition(sf::Vector2f(850.f, 545.f));
+}
+
+void Engine::SetAssets()
+{
+	m_BackgroundTexture = TextureHolder::GetTexture("graphics/Space-Background-Tiled.png");
+	m_BackgroundSprite.setTexture(m_BackgroundTexture);
+
+	m_BattleStartTex = TextureHolder::GetTexture("graphics/battle_start.png");
+	m_BattleStartSprite.setTexture(m_BattleStartTex);
+	m_BattleStartSprite.setScale(sf::Vector2f(5.f, 5.f));
+	m_BattleStartSprite.setPosition(sf::Vector2f(600, 400));
+
+	m_WinTex = TextureHolder::GetTexture("graphics/enemy_deleted.png");
+	m_WinSprite.setTexture(m_WinTex);
+	m_WinSprite.setScale(sf::Vector2f(5.f, 5.f));
+	m_WinSprite.setPosition(sf::Vector2f(600, 400));
+
+	m_LossTex = TextureHolder::GetTexture("graphics/game_over.png");
+	m_LossSprite.setTexture(m_LossTex);
+	m_LossSprite.setScale(sf::Vector2f(5.f, 5.f));
+	m_LossSprite.setPosition(sf::Vector2f(530, 400));
+
+	thanksFont.loadFromFile("fonts/FunkyJunk.ttf");
+
+	thanksText.setFont(thanksFont);
+	thanksText.setCharacterSize(90);
+	thanksText.setFillColor(Color::White);
+	thanksText.setPosition(0, 400);
+	std::stringstream s;
+	s << "    Thanks for Playing! \n Stay Tuned For Updates \n \n   Press Escape To Exit...";
+	thanksText.setString(s.str());
+
+	battleMusic.openFromFile("sounds/loop_theme.ogg");
+	battleMusic.setLoop(true);
+	battleMusic.setVolume(1.5f);
 }

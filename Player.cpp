@@ -165,6 +165,7 @@ void Player::checkPlayerHit(int frameCounter)
 
 			recentHit = true;
 			canMove = false;
+			canShoot = false;
 
 			m_PlayerSprite.setTextureRect(IntRect(420, 280, 55, 70));
 
@@ -177,6 +178,7 @@ void Player::checkPlayerHit(int frameCounter)
 				recentHit = false;
 				m_PlayerSprite.setTextureRect(IntRect(0, 145, 55, 70));
 				canMove = true;
+				canShoot = true;
 			}
 		}
 	}
