@@ -21,6 +21,11 @@ Zipped in this file is all of the source code and assets, along with an executab
 
 Battle Network -> Battle Network -> Run the Battle Netwok.exe application
 
+If you are missing any dll files after running the application, you may have to install the latest SDK for windows 10.
+Installing Visual Studios will also correct the issue by giving you the latest redistributable for Visual C++
+Use the link below to locate the necessary package:
+https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/
+
 
 
 Battle Network runs on Windows platforms, to play the game use W,A,S,D to move and Space to shoot
